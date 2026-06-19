@@ -1,0 +1,41 @@
+{
+  "worker": "afo-gitzip-patcher-mcp",
+  "version": "0.1.0-core",
+  "action": "apply_repo_text_patch",
+  "target": {
+    "owner": "nothinginfinity",
+    "repo": "sandbox-dogfoodma-next-cockpit-sandbox",
+    "branch": "main",
+    "path": "src/worker.js"
+  },
+  "source_sha": "647cbf521c08cd4ee0414a91543604b869df3417",
+  "result_sha": "647cbf521c08cd4ee0414a91543604b869df3417",
+  "commit_sha": "9457aa5f628423f42756f6c178ba4617111095ec",
+  "diff": {
+    "before_length": 13779,
+    "after_length": 13779,
+    "delta": 0,
+    "common_prefix": 13779,
+    "common_suffix": 0,
+    "before_fingerprint": "3053c373",
+    "after_fingerprint": "3053c373"
+  },
+  "applied": [
+    {
+      "label": "op_0",
+      "type": "insert_after",
+      "changed": true
+    },
+    {
+      "label": "op_1",
+      "type": "insert_before",
+      "changed": true
+    }
+  ],
+  "verification": {
+    "ok": true,
+    "results": [],
+    "failed": []
+  },
+  "timestamp": "2026-06-19T07:24:50.101Z"
+}
