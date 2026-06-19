@@ -1,0 +1,28 @@
+{
+  "name": "Dogfoodma Stable Cockpit",
+  "version": "0.0.4-stable-cockpit",
+  "theme": "black_glass_gold",
+  "layout": "spherical_constellation",
+  "hud": "luxury_cockpit",
+  "controls": "mobile_fly_with_snap_focus",
+  "mobile": {
+    "pixelRatioCap": 2,
+    "targetFps": 45,
+    "lowPowerMode": true,
+    "maxObjects": 180
+  },
+  "data": {
+    "source": "inline",
+    "binding": "dogfoodma:stable-cockpit",
+    "items": [
+      {"id": "design_system", "title": "Design System", "cluster": "Dogfoodma"},
+      {"id": "scene_compiler", "title": "Scene Compiler", "cluster": "Dogfoodma"},
+      {"id": "mcp_tools", "title": "MCP Tools", "cluster": "Agents"},
+      {"id": "visual_receipt", "title": "Visual Receipt", "cluster": "Receipts"},
+      {"id": "three_runtime", "title": "Three Runtime", "cluster": "Renderer"},
+      {"id": "data_adapter", "title": "Data Adapter", "cluster": "Data"},
+      {"id": "asset_adapter", "title": "Asset Adapter", "cluster": "Assets"},
+      {"id": "app_factory", "title": "App Factory", "cluster": "Next"}
+    ]
+  }
+}
