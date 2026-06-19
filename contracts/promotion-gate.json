@@ -1,0 +1,8 @@
+{
+  "id": "promotion-gate",
+  "version": "1.0.0",
+  "required_manual_checks": ["cockpit_renders", "drag_fly_works", "brake_works", "boost_works", "reset_works", "speed_label_updates", "crosshair_targeting_works", "tap_select_drawer_works", "route_panels_work"],
+  "required_endpoint_checks": ["/health", "/api/smoke", "/api/visual-contract", "/api/promotion-check", "/api/scene-spec", "/mcp/tools", "/mcp/schema"],
+  "blocked_if": ["production_mutated", "forbidden_nodes_present", "protected_routes_changed_without_approval", "mobile_safe_area_failed", "manual_browser_test_failed"],
+  "promotion_decision": "manual_approval_required"
+}
