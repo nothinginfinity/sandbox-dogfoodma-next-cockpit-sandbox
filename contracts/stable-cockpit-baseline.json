@@ -1,0 +1,14 @@
+{
+  "id": "stable-cockpit-baseline",
+  "version": "0.0.4-stable-cockpit",
+  "runtime": "AFO Mobile Visual Runtime",
+  "purpose": "Machine-readable baseline for the approved Dogfoodma stable cockpit visual shell.",
+  "protected_routes": ["/", "/studio", "/preview"],
+  "required_routes": ["/", "/studio", "/preview", "/health", "/llms.txt", "/mcp/tools", "/mcp/schema", "/mcp/call", "/api/sample-scene", "/api/compile", "/api/smoke", "/api/receipt"],
+  "required_nodes": ["Design System", "Scene Compiler", "MCP Tools", "Visual Receipt", "Three Runtime", "Data Adapter", "Asset Adapter", "App Factory"],
+  "required_controls": ["Brake", "Reset", "Boost"],
+  "required_panels": ["Studio", "Tools", "Schema", "Sample", "Receipt"],
+  "required_interactions": ["drag_fly", "brake", "boost", "reset", "speed_label_update", "crosshair_target", "tap_select_drawer"],
+  "forbidden_nodes": ["London", "Tokyo", "Dana Point", "Long Beach", "Los Angeles", "Sydney"],
+  "promotion_rule": "No sandbox build may be promoted unless it preserves protected routes and passes visual-contract and promotion-check endpoints."
+}
