@@ -1,18 +1,114 @@
-const VERSION="0.0.4-stable-cockpit";
-const NAME="AFO Mobile Visual Runtime";
-const CORS={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Access-Control-Allow-Headers":"Content-Type"};
-const TOOLS=["create_design_system","create_scene_spec","compile_three_worker_page","compile_three_object_graph","validate_mobile_performance_budget","generate_visual_receipt"];
-const ROUTES=["/","/studio","/preview","/health","/llms.txt","/mcp/tools","/mcp/schema","/mcp/call","/api/sample-scene","/api/compile","/api/smoke","/api/receipt"];
-const sample={name:"Dogfoodma Stable Cockpit",theme:"black_glass_gold",layout:"spherical_constellation",hud:"luxury_cockpit",controls:"mobile_fly_with_snap_focus",mobile:{pixelRatioCap:2,targetFps:45,lowPowerMode:true,maxObjects:180},data:{source:"inline",binding:"dogfoodma:stable-cockpit",items:[{id:"design_system",title:"Design System",cluster:"Dogfoodma"},{id:"scene_compiler",title:"Scene Compiler",cluster:"Dogfoodma"},{id:"mcp_tools",title:"MCP Tools",cluster:"Agents"},{id:"visual_receipt",title:"Visual Receipt",cluster:"Receipts"},{id:"three_runtime",title:"Three Runtime",cluster:"Renderer"},{id:"data_adapter",title:"Data Adapter",cluster:"Data"},{id:"asset_adapter",title:"Asset Adapter",cluster:"Assets"},{id:"app_factory",title:"App Factory",cluster:"Next"}]}};
-const theme={bg:"#03040a",a:"#ffd76b",b:"#74f7ff",p:"rgba(8,10,20,.72)"};
-function J(v,s=200){return Response.json(v,{status:s,headers:CORS})}
-function T(v,t="text/plain; charset=utf-8"){return new Response(v,{headers:{...CORS,"Content-Type":t,"Cache-Control":"no-store,no-cache,must-revalidate","Pragma":"no-cache"}})}
-function norm(x={}){x=x&&typeof x==="object"?x:{};let d=x.data||{},m=x.mobile||{},items=Array.isArray(d.items)?d.items:sample.data.items;return {name:String(x.name||sample.name),version:VERSION,theme:String(x.theme||sample.theme),layout:String(x.layout||sample.layout),hud:String(x.hud||sample.hud),controls:String(x.controls||sample.controls),mobile:{pixelRatioCap:Number(m.pixelRatioCap||2),targetFps:Number(m.targetFps||45),lowPowerMode:m.lowPowerMode!==false,maxObjects:Number(m.maxObjects||180)},data:{source:String(d.source||sample.data.source),binding:String(d.binding||sample.data.binding),items:items.map((it,i)=>({id:String(it.id||"item_"+i),title:String(it.title||it.name||"Item "+(i+1)),cluster:String(it.cluster||"Dogfoodma"),url:String(it.url||"")}))}}}
-function budget(s){return {ok:true,profile:"phone-safe",estimatedObjects:s.data.items.length,estimatedDrawCalls:s.data.items.length+10,pixelRatioCap:s.mobile.pixelRatioCap,targetFps:s.mobile.targetFps}}
-function positions(s){let n=Math.max(1,s.data.items.length);return s.data.items.map((it,i)=>{let a=i/n*Math.PI*2;return {...it,x:Math.cos(a)*340,y:Math.sin(i*1.73)*95,z:Math.sin(a)*340}})}
-function receipt(x,source="runtime"){let s=norm(x);return {ok:true,runtime:NAME,version:VERSION,source,scene:s.name,item_count:s.data.items.length,binding:s.data.binding,budget:budget(s),status:"stable-cockpit-restored"}}
-function graph(x){let s=norm(x);return {metadata:{version:4.6,type:"Object",generator:NAME+" "+VERSION},object:{type:"Scene",name:s.name,userData:{dogfoodma:s,budget:budget(s)},children:positions(s).map((n,i)=>({type:"Mesh",name:n.title,position:[n.x,n.y,n.z],userData:n,geometry:{type:"IcosahedronGeometry",radius:24},material:{type:"MeshStandardMaterial",color:i%2?theme.b:theme.a}}))}}}
-function page(x){let s=norm(x),safe=JSON.stringify(s).replace(/</g,"\\u003c"),tools=TOOLS.join("<br>"),routes=ROUTES.join("<br>");return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover"><title>${s.name}</title><style>:root{--bg:${theme.bg};--a:${theme.a};--b:${theme.b};--p:${theme.p}}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at 25% 20%,color-mix(in srgb,var(--a) 20%,transparent),transparent 32%),radial-gradient(circle at 80% 70%,color-mix(in srgb,var(--b) 18%,transparent),transparent 35%),var(--bg);color:white;font-family:Inter,system-ui}canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none}.glass{background:var(--p);border:1px solid color-mix(in srgb,var(--a) 42%,transparent);box-shadow:0 28px 90px #0008,inset 0 1px #fff2;backdrop-filter:blur(18px)}.hud{position:fixed;inset:0;padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 12px);display:grid;grid-template-rows:auto 1fr auto;pointer-events:none;gap:10px}.top{border-radius:24px;padding:12px}.brand{font:900 11px ui-monospace;color:var(--a);letter-spacing:.15em;text-transform:uppercase}h1{font-size:20px;line-height:1.05;margin:5px 0}.meta{font-size:11px;color:#b8c8d8}.nav{display:flex;gap:6px;overflow:auto;pointer-events:auto;margin-top:10px}.nav button,.bottom button{border:1px solid color-mix(in srgb,var(--a) 45%,transparent);background:rgba(255,255,255,.07);color:white;border-radius:999px;padding:10px 12px;font-weight:900}.nav button.active{background:linear-gradient(135deg,var(--a),var(--b));color:#061017}.ret{position:fixed;left:50%;top:50%;width:48px;height:48px;margin:-24px;border:1px solid #fff8;border-radius:50%;pointer-events:none}.ret:before,.ret:after{content:"";position:absolute;background:#fff8}.ret:before{left:50%;top:-14px;width:1px;height:76px}.ret:after{top:50%;left:-14px;height:1px;width:76px}.ret.on{border-color:var(--a);box-shadow:0 0 30px var(--a)}.bottom{display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;pointer-events:auto}.speed{border-radius:999px;padding:11px 14px;color:var(--a);font:900 11px ui-monospace}.drawer,.panel{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 74px);border-radius:22px;padding:13px;display:none;z-index:8;pointer-events:auto}.drawer.on,.panel.on{display:block}.drawer h2,.panel h2{margin:0 0 6px;font-size:16px}.drawer p,.panel p{margin:0;color:#c9d8e7;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.card{border:1px solid #fff2;border-radius:14px;padding:9px;background:#fff1;font:800 11px ui-monospace;color:#dcecff;max-height:160px;overflow:auto}.pill{color:var(--b)}</style></head><body><canvas id="cv"></canvas><div id="ret" class="ret"></div><div id="drawer" class="drawer glass"><h2 id="dt">Selected</h2><p id="dm"></p></div><div id="panel" class="panel glass"><h2 id="pt">Panel</h2><p id="pb"></p><div id="pg" class="grid"></div></div><div class="hud"><div class="top glass"><div class="brand">Dogfoodma · ${VERSION}</div><h1>${s.name}</h1><div class="meta">${s.layout} · ${s.hud} · ${s.data.items.length} Dogfoodma nodes · ${s.data.binding}</div><div class="nav"><button data-p="studio" class="active">Studio</button><button data-p="tools">Tools</button><button data-p="schema">Schema</button><button data-p="sample">Sample</button><button data-p="receipt">Receipt</button></div></div><div></div><div class="bottom"><button id="brake">Brake</button><div id="speed" class="speed glass">2.4x</div><button id="reset">Reset</button><button id="boost">Boost</button></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script><script>const SPEC=${safe},TOOLS='${tools}',ROUTES='${routes}',REC=${JSON.stringify(receipt(s,"ui"))};let scene,camera,renderer,raycaster,objs=[],speedValue=2.4,yaw=0,pitch=0,down=false,lx=0,ly=0,target=null;const COL=['${theme.a}','${theme.b}','#ffffff','#ff8bd8','#a7ff83'];function V(c){return new THREE.Color(c)}function P(i,n,r){let g=Math.PI*(3-Math.sqrt(5)),y=1-i/(n-1||1)*2,rr=Math.sqrt(Math.max(0,1-y*y)),t=g*i;return new THREE.Vector3(Math.cos(t)*rr*r,y*r,Math.sin(t)*rr*r)}function init(){if(!window.THREE)return;scene=new THREE.Scene();scene.fog=new THREE.FogExp2(V('${theme.bg}'),.00075);camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,6000);camera.position.set(0,90,560);renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,SPEC.mobile.pixelRatioCap));renderer.setSize(innerWidth,innerHeight);raycaster=new THREE.Raycaster();scene.add(new THREE.AmbientLight(V('${theme.b}'),.85));let l=new THREE.DirectionalLight(0xffffff,1.25);l.position.set(260,420,520);scene.add(l);stars();nodes();bind();onresize=resize;loop()}function stars(){let n=SPEC.mobile.lowPowerMode?900:1800,a=new Float32Array(n*3);for(let i=0;i<n;i++){let p=P(i,n,900+Math.random()*900);a[i*3]=p.x;a[i*3+1]=p.y;a[i*3+2]=p.z}let g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(a,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:V('${theme.b}'),size:2.1,sizeAttenuation:true,transparent:true,opacity:.72})))}function nodes(){SPEC.data.items.forEach((item,i)=>{let p=P(i,SPEC.data.items.length,340),mat=new THREE.MeshStandardMaterial({color:V(COL[i%COL.length]),metalness:.28,roughness:.22,emissive:V(COL[i%COL.length]),emissiveIntensity:.18});let m=new THREE.Mesh(new THREE.IcosahedronGeometry(24,1),mat);m.position.copy(p);m.userData=item;scene.add(m);objs.push(m);let r=new THREE.Mesh(new THREE.TorusGeometry(34,1.2,8,64),new THREE.MeshBasicMaterial({color:V(COL[i%COL.length]),transparent:true,opacity:.38}));r.position.copy(p);r.lookAt(0,0,0);scene.add(r)})}function bind(){cv.ontouchstart=e=>{e.preventDefault();let t=e.touches[0];start(t.clientX,t.clientY)};cv.ontouchmove=e=>{e.preventDefault();let t=e.touches[0];move(t.clientX,t.clientY)};cv.ontouchend=e=>{e.preventDefault();end(true)};cv.onmousedown=e=>start(e.clientX,e.clientY);cv.onmousemove=e=>{if(down)move(e.clientX,e.clientY)};onmouseup=()=>end(false);brake.onclick=()=>{speedValue=Math.max(.2,speedValue-.8);updateSpeed()};boost.onclick=()=>{speedValue=Math.min(10,speedValue+.8);updateSpeed()};reset.onclick=()=>{camera.position.set(0,90,560);speedValue=2.4;updateSpeed()};document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>openPanel(b.dataset.p,b))}function start(x,y){down=true;lx=x;ly=y}function move(x,y){yaw=-(x-lx)*.003;pitch=-(y-ly)*.0024;lx=x;ly=y}function end(tap){if(tap&&target){let u=target.object.userData;dt.textContent=u.title||u.id;dm.innerHTML='<span class="pill">'+(u.cluster||'')+'</span> · '+SPEC.data.binding+' · '+u.id;drawer.classList.add('on');setTimeout(()=>drawer.classList.remove('on'),2600)}down=false}function updateSpeed(){document.getElementById('speed').textContent=speedValue.toFixed(1)+'x'}function openPanel(k,b){document.querySelectorAll('[data-p]').forEach(x=>x.classList.remove('active'));b.classList.add('active');panel.classList.add('on');pt.textContent=k[0].toUpperCase()+k.slice(1);let data={studio:['Version: '+SPEC.version,'Theme: '+SPEC.theme,'Layout: '+SPEC.layout,'No city sample data'],tools:TOOLS.split('<br>'),schema:['Dogfoodma stable cockpit','Routes: '+ROUTES.split('<br>').length],sample:[JSON.stringify(SPEC,null,2)],receipt:[JSON.stringify(REC,null,2)]}[k];pb.textContent=k==='studio'?'Emergency stable cockpit restored.':'Runtime panel';pg.innerHTML=data.map(x=>'<div class="card">'+String(x).replace(/[<>&]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]))+'</div>').join('')}function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}function loop(){requestAnimationFrame(loop);camera.rotateY(yaw);camera.rotateX(pitch);camera.translateZ(-speedValue);yaw*=.86;pitch*=.86;objs.forEach((o,i)=>{o.rotation.x+=.004+i*.0003;o.rotation.y+=.006});raycaster.setFromCamera({x:0,y:0},camera);target=raycaster.intersectObjects(objs,false)[0];ret.classList.toggle('on',!!target);renderer.render(scene,camera)}init()</script></body></html>`}
-async function body(req){try{return await req.json()}catch{return null}}
-async function mcp(p){let tool=p?.tool||p?.name,input=p?.input||{};if(tool==="create_design_system")return {ok:true,tokens:{theme:"black_glass_gold",colors:{background:theme.bg,accent:theme.a,accent2:theme.b,panel:theme.p}}};if(tool==="create_scene_spec")return {ok:true,spec:norm(input),budget:budget(norm(input))};if(tool==="compile_three_worker_page")return {ok:true,html:page(input),receipt:receipt(input,"mcp")};if(tool==="compile_three_object_graph")return {ok:true,three_json:graph(input)};if(tool==="validate_mobile_performance_budget")return {ok:true,budget:budget(norm(input))};if(tool==="generate_visual_receipt")return receipt(input,"mcp");return {ok:false,error:"unknown_tool",available:TOOLS}}
-export default {async fetch(req){if(req.method==="OPTIONS")return new Response(null,{headers:CORS});let u=new URL(req.url);if(u.pathname==="/"||u.pathname==="/studio"||u.pathname==="/preview")return T(page(sample),"text/html; charset=utf-8");if(u.pathname==="/health")return J({ok:true,name:NAME,version:VERSION,routes:ROUTES,sample_nodes:sample.data.items.map(x=>x.title)});if(u.pathname==="/llms.txt")return T(`# ${NAME}\n\nVersion: ${VERSION}\n\nEmergency stable cockpit. No city sample data.`);if(u.pathname==="/mcp/tools")return J({name:NAME,version:VERSION,tools:TOOLS.map(name=>({name}))});if(u.pathname==="/mcp/schema")return J({name:NAME,version:VERSION,sample,sceneSpec:norm(sample)});if(u.pathname==="/mcp/call"&&req.method==="POST")return J(await mcp(await body(req)));if(u.pathname==="/api/sample-scene")return J(sample);if(u.pathname==="/api/compile"&&req.method==="POST")return J({ok:true,html:page(await body(req)),receipt:receipt(await body(req),"api")});if(u.pathname==="/api/smoke")return J({ok:true,version:VERSION,no_city_sample_data:true,controls:["Brake","Reset","Boost"],nodes:sample.data.items.map(x=>x.title)});if(u.pathname==="/api/receipt")return J(receipt(sample,"sample"));return J({ok:false,error:"not_found",routes:ROUTES},404)}};
+const VERSION = "0.0.5-guardrail-proxy";
+const UPSTREAM = "https://afo-mobile-visual-runtime.jaredtechfit.workers.dev";
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+const BASELINE = {
+  id: "stable-cockpit-baseline",
+  version: "0.0.4-stable-cockpit",
+  protected_routes: ["/", "/studio", "/preview"],
+  required_routes: ["/", "/studio", "/preview", "/health", "/llms.txt", "/mcp/tools", "/mcp/schema", "/mcp/call", "/api/sample-scene", "/api/compile", "/api/smoke", "/api/receipt", "/api/visual-contract", "/api/promotion-check", "/api/scene-spec"],
+  required_nodes: ["Design System", "Scene Compiler", "MCP Tools", "Visual Receipt", "Three Runtime", "Data Adapter", "Asset Adapter", "App Factory"],
+  required_controls: ["Brake", "Reset", "Boost"],
+  required_panels: ["Studio", "Tools", "Schema", "Sample", "Receipt"],
+  forbidden_nodes: ["London", "Tokyo", "Dana Point", "Long Beach", "Los Angeles", "Sydney"]
+};
+const SCENE = {
+  name: "Dogfoodma Stable Cockpit",
+  version: "0.0.4-stable-cockpit",
+  theme: "black_glass_gold",
+  layout: "spherical_constellation",
+  hud: "luxury_cockpit",
+  controls: "mobile_fly_with_snap_focus",
+  mobile: {
+    pixelRatioCap: 2,
+    targetFps: 45,
+    lowPowerMode: true,
+    maxObjects: 180
+  },
+  data: {
+    source: "inline",
+    binding: "dogfoodma:stable-cockpit",
+    items: [
+      { id: "design_system", title: "Design System", cluster: "Dogfoodma" },
+      { id: "scene_compiler", title: "Scene Compiler", cluster: "Dogfoodma" },
+      { id: "mcp_tools", title: "MCP Tools", cluster: "Agents" },
+      { id: "visual_receipt", title: "Visual Receipt", cluster: "Receipts" },
+      { id: "three_runtime", title: "Three Runtime", cluster: "Renderer" },
+      { id: "data_adapter", title: "Data Adapter", cluster: "Data" },
+      { id: "asset_adapter", title: "Asset Adapter", cluster: "Assets" },
+      { id: "app_factory", title: "App Factory", cluster: "Next" }
+    ]
+  }
+};
+function json(value, status = 200) {
+  return Response.json(value, { status, headers: CORS });
+}
+function nodeTitles() {
+  return SCENE.data.items.map((item) => item.title);
+}
+function visualContract() {
+  const actual = nodeTitles();
+  const missing = BASELINE.required_nodes.filter((node) => !actual.includes(node));
+  const forbidden = BASELINE.forbidden_nodes.filter((node) => actual.includes(node));
+  const ok = missing.length === 0 && forbidden.length === 0;
+  return {
+    ok,
+    sandbox_version: VERSION,
+    baseline_version: BASELINE.version,
+    upstream: UPSTREAM,
+    visual_shell: "proxied-stable-cockpit",
+    production_mutated: false,
+    protected_routes: BASELINE.protected_routes,
+    required_routes: BASELINE.required_routes,
+    required_nodes: BASELINE.required_nodes,
+    actual_nodes: actual,
+    missing_nodes: missing,
+    forbidden_nodes_present: forbidden,
+    required_controls: BASELINE.required_controls,
+    required_panels: BASELINE.required_panels
+  };
+}
+function promotionCheck() {
+  const contract = visualContract();
+  return {
+    ok: contract.ok,
+    eligible: contract.ok,
+    sandbox_version: VERSION,
+    baseline_version: BASELINE.version,
+    production_mutated: false,
+    manual_approval_required: true,
+    endpoint_checks_required: ["/health", "/api/smoke", "/api/visual-contract", "/api/promotion-check", "/api/scene-spec", "/mcp/tools", "/mcp/schema"],
+    manual_checks_required: ["cockpit_renders", "drag_fly_works", "brake_works", "boost_works", "reset_works", "speed_label_updates", "crosshair_targeting_works", "tap_select_drawer_works", "route_panels_work"],
+    checks: {
+      visual_contract: contract.ok,
+      missing_nodes: contract.missing_nodes.length,
+      forbidden_nodes_present: contract.forbidden_nodes_present.length > 0,
+      production_mutated: false
+    },
+    decision: contract.ok ? "manual_review_required" : "blocked"
+  };
+}
+async function proxy(req) {
+  const url = new URL(req.url);
+  const upstream = new URL(url.pathname + url.search, UPSTREAM);
+  const init = {
+    method: req.method,
+    headers: req.headers,
+    body: req.method === "GET" || req.method === "HEAD" ? undefined : req.body,
+    redirect: "follow"
+  };
+  return fetch(new Request(upstream.toString(), init));
+}
+export default {
+  async fetch(req) {
+    if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
+    const url = new URL(req.url);
+    if (url.pathname === "/api/visual-contract") return json(visualContract());
+    if (url.pathname === "/api/promotion-check") return json(promotionCheck());
+    if (url.pathname === "/api/scene-spec") return json({ ok: true, sandbox_version: VERSION, baseline: BASELINE, scene: SCENE });
+    return proxy(req);
+  }
+};
