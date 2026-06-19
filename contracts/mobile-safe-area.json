@@ -1,0 +1,22 @@
+{
+  "id": "mobile-safe-area",
+  "version": "1.0.0",
+  "purpose": "Mobile layout constraints for Three.js cockpit UI surfaces.",
+  "viewport": {
+    "meta": "width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover",
+    "safe_area_required": true
+  },
+  "controls": {
+    "min_tap_target_px": 44,
+    "bottom_safe_area_padding": true,
+    "no_browser_bar_overlap": true,
+    "visible_controls": ["Brake", "Reset", "Boost"]
+  },
+  "renderer": {
+    "pixel_ratio_cap": 2,
+    "target_fps": 45,
+    "low_power_mode": true,
+    "max_objects": 180
+  },
+  "fail_conditions": ["controls_clipped", "offscreen_primary_nodes", "city_demo_data_present", "route_panel_unreadable"]
+}
