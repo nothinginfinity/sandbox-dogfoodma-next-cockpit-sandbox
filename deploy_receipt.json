@@ -1,0 +1,12 @@
+{
+  "sandbox_id": "sbx_dogfoodma-next-cockpit-sandbox_mqkgt1t2",
+  "repo": "nothinginfinity/sandbox-dogfoodma-next-cockpit-sandbox",
+  "worker": "sandbox-dogfoodma-next-cockpit-sandbox",
+  "version": "0.0.5-sandbox",
+  "production_repo": "nothinginfinity/dogfoodma",
+  "production_version": "0.0.4-stable-cockpit",
+  "production_mutated": false,
+  "manual_test_required": true,
+  "required_nodes": ["Design System", "Scene Compiler", "MCP Tools", "Visual Receipt", "Three Runtime", "Template Registry", "Adapter Contracts", "App Factory"],
+  "forbidden_nodes": ["London", "Tokyo", "Dana Point", "Long Beach"]
+}
