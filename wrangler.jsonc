@@ -1,0 +1,10 @@
+{
+  "name": "sandbox-dogfoodma-next-cockpit-sandbox",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-06-18",
+  "workers_dev": true,
+  "vars": {
+    "SANDBOX_ID": "sbx_dogfoodma-next-cockpit-sandbox_mqkgt1t2",
+    "PRODUCTION_LOCKED_VERSION": "0.0.4-stable-cockpit"
+  }
+}
